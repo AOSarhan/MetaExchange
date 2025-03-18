@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MetaExchange.Console": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  },
+  "ExchangesPath": "exchanges"
+}

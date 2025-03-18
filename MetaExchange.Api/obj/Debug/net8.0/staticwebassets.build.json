@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "LGULJYjqP/EGZTGB11LjUCb375jDLcfEjM+n+1fJ/oI=",
+  "Source": "MetaExchange.Api",
+  "BasePath": "_content/MetaExchange.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

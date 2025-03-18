@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\MetaExchange.Api.props" />
+</Project>

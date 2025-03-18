@@ -1,0 +1,28 @@
+[
+  {
+    "ContainingType": "MetaExchange.Api.Controllers.ExchangeController",
+    "Method": "ExecuteOrder",
+    "RelativePath": "api/Exchange/execute",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MetaExchange.Core.Models.OrderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[MetaExchange.Core.Models.ExecutionOrder, MetaExchange.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
