@@ -7,7 +7,7 @@ public class App(IMetaExchange metaExchange, IExchangeLoader exchangeLoader)
 {
     public async Task RunAsync(string[] args)
     {
-        var request = new OrderRequest { Type = OrderType.Buy, Amount = 19m };
+        var request = new OrderRequest { Type = OrderType.Buy, Amount = 9m };
         try
         {
             var exchanges = exchangeLoader.LoadExchanges();

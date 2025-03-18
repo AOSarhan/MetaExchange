@@ -55,3 +55,4 @@ C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Console\obj\Debug\net8.
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Console\obj\Debug\net8.0\MetaExchange.Console.pdb
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Console\obj\Debug\net8.0\MetaExchange.Console.genruntimeconfig.cache
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Console\obj\Debug\net8.0\ref\MetaExchange.Console.dll
+C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Console\obj\Debug\net8.0\MetaExchange.Console.sourcelink.json

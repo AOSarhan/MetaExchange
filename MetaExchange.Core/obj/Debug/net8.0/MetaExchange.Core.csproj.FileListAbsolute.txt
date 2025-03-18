@@ -9,3 +9,4 @@ C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\M
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\refint\MetaExchange.Core.dll
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\MetaExchange.Core.pdb
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\ref\MetaExchange.Core.dll
+C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\MetaExchange.Core.sourcelink.json

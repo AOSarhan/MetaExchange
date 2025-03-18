@@ -48,7 +48,7 @@ namespace MetaExchange.Tests
                 {
                     Id = $"exchange-{i}",
                     AvailableFunds = new AvailableFunds { BtcBalance = 1000, EurBalance = 1000000 },
-                    OrderBook = new OrderBook { Asks = asks, Bids = new List<OrderWrapper>() }
+                    OrderBook = new OrderBook { Asks = asks, Bids = [] }
                 }));
             }
             return result;
