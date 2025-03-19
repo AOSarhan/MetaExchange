@@ -2,8 +2,8 @@
 
 public class OrderRequest
 {
-    public OrderType Type { get; set; }
-    public decimal Amount { get; set; }
+    public OrderType Type { get; init; }
+    public decimal Amount { get; init; }
 }
 
 public enum OrderType

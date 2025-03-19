@@ -10,3 +10,5 @@ C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\r
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\MetaExchange.Core.pdb
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\ref\MetaExchange.Core.dll
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\MetaExchange.Core.sourcelink.json
+C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\obj\Debug\net8.0\MetaExchange.Core.csproj.AssemblyReference.cache
+C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Core\bin\Debug\net8.0\appsettings.json

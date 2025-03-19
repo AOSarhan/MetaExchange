@@ -1,4 +1,5 @@
 ﻿using MetaExchange.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -18,18 +19,7 @@ public static class Program
         return Host.CreateDefaultBuilder(args)
             .ConfigureServices((context, services) =>
             {
-                //var basePath = Path.GetFullPath(Path.Combine(
-                //    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? Directory.GetCurrentDirectory(),
-                //    "..", "..", "..", ".."));
-                //var exchangesPath = Path.Combine(basePath, "exchanges");
-
-                var exchangesPath = "C:\\Users\\ahsarhan\\source\\repos\\MetaExchange\\exchanges";
-                if (string.IsNullOrEmpty(exchangesPath) || !Directory.Exists(exchangesPath))
-                {
-                    throw new InvalidOperationException($"Exchanges path '{exchangesPath}' is invalid or does not exist.");
-                }
-
-                services.AddSingleton<IExchangeLoader>(new ExchangeLoader(exchangesPath));
+                services.AddSingleton<IExchangeLoader, ExchangeLoader>();
                 services.AddSingleton<IMetaExchange, Core.MetaExchange>();
                 services.AddTransient<App>();
             });

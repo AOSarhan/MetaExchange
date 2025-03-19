@@ -14,25 +14,29 @@ namespace MetaExchange.Tests
         [Fact]
         public void ComparePerformance()
         {
-            var exchanges = GenerateLargeDataset(100000, 1000); // 100 exchanges, 100 orders each
-            var request = new OrderRequest { Type = OrderType.Buy, Amount = 1000m };
+            var exchanges = GenerateLargeDataset(100000, 1000);
+            var request = new OrderRequest { Type = OrderType.Buy, Amount = 30m };
             var metaExchange = new Core.MetaExchange();
 
             var stopwatch = Stopwatch.StartNew();
-            var result = metaExchange.ProcessOrder(exchanges, request);
+            metaExchange.ProcessOrderLargeSet(exchanges, request);
             stopwatch.Stop();
 
-            Console.WriteLine($"Processed {result.Count} orders in {stopwatch.ElapsedMilliseconds} ms");
+            var stopwatch2 = Stopwatch.StartNew();
+            metaExchange.ProcessOrder(exchanges, request);
+            stopwatch2.Stop();
+
+            Assert.True(stopwatch.ElapsedMilliseconds < stopwatch2.ElapsedMilliseconds);
         }
 
         private List<(string, ExchangeData)> GenerateLargeDataset(int exchangeCount, int ordersPerExchange)
         {
             var random = new Random();
             var result = new List<(string, ExchangeData)>();
-            for (int i = 0; i < exchangeCount; i++)
+            for (var i = 0; i < exchangeCount; i++)
             {
                 var asks = new List<OrderWrapper>();
-                for (int j = 0; j < ordersPerExchange; j++)
+                for (var j = 0; j < ordersPerExchange; j++)
                 {
                     asks.Add(new OrderWrapper
                     {
@@ -47,7 +51,7 @@ namespace MetaExchange.Tests
                 result.Add(($"exchange-{i}", new ExchangeData
                 {
                     Id = $"exchange-{i}",
-                    AvailableFunds = new AvailableFunds { BtcBalance = 1000, EurBalance = 1000000 },
+                    AvailableFunds = new AvailableFunds { Crypto = 1000, Euro = 1000000 },
                     OrderBook = new OrderBook { Asks = asks, Bids = [] }
                 }));
             }

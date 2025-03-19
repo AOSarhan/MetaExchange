@@ -14,8 +14,8 @@ public class ExchangeController(IMetaExchange metaExchange, IExchangeLoader exch
         try
         {
             var exchanges = exchangeLoader.LoadExchanges();
-            var orders = metaExchange.ProcessOrder(exchanges, request);
-            return Ok(orders);
+            var executionOrders = metaExchange.ProcessOrder(exchanges, request);
+            return Ok(executionOrders);
         }
         catch (Exception ex)
         {

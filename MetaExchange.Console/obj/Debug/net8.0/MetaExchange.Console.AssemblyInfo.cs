@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MetaExchange.Console")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee2c103cd8efb7f1ab5e3b0e990e3c3598a6e451")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+590178d220668e9152236aded2adfa2c96e4093f")]
 [assembly: System.Reflection.AssemblyProductAttribute("MetaExchange.Console")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MetaExchange.Console")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

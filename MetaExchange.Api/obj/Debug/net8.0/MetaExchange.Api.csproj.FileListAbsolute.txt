@@ -7,7 +7,6 @@ C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\obj\Debug\net8.0\Me
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\MetaExchange.Console.deps.json
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\MetaExchange.Console.runtimeconfig.json
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\MetaExchange.Console.exe
-C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\appsettings.json
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\MetaExchange.Api.staticwebassets.endpoints.json
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\bin\Debug\net8.0\MetaExchange.Api.exe
@@ -76,3 +75,4 @@ C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\obj\Debug\net8.0\re
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\obj\Debug\net8.0\MetaExchange.Api.pdb
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\obj\Debug\net8.0\MetaExchange.Api.genruntimeconfig.cache
 C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\obj\Debug\net8.0\ref\MetaExchange.Api.dll
+C:\Users\ahsarhan\source\repos\MetaExchange\MetaExchange.Api\obj\Debug\net8.0\MetaExchange.Api.sourcelink.json

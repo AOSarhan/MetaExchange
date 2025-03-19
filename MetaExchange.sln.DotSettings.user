@@ -3,5 +3,6 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::5E00783B-0102-4BB8-BB14-1DA9739D818C::net8.0::MetaExchange.Tests.MetaExchangeTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::5E00783B-0102-4BB8-BB14-1DA9739D818C::net8.0::MetaExchange.Tests.PerformanceTest.ComparePerformance&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5E00783B-0102-4BB8-BB14-1DA9739D818C::net8.0::MetaExchange.Tests.PerformanceTest.ComparePerformanceAndResults&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

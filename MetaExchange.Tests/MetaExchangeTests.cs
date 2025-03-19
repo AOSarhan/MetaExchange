@@ -11,9 +11,9 @@ public class MetaExchangeTests
     public void BuyOrder_SimpleCase_ReturnsBestPrice()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 20000m, BtcBalance = 3m },
+            ("ex1", new AvailableFunds { Euro = 20000m, Crypto = 3m },
                 [(3000m, 5m)], null),
-            ("ex2", new AvailableFunds { EurBalance = 20000m, BtcBalance = 9m },
+            ("ex2", new AvailableFunds { Euro = 20000m, Crypto = 9m },
                 [(3100m, 5m)], null)
         );
 
@@ -30,33 +30,31 @@ public class MetaExchangeTests
     public void BuyOrder_MultipleExchanges_ReturnsCheapestCombination()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 10000m, BtcBalance = 1m },
+            ("ex1", new AvailableFunds { Euro = 10000m, Crypto = 1m },
                 [(3000m, 2m)], null),
-            ("ex2", new AvailableFunds { EurBalance = 20000m, BtcBalance = 3m },
+            ("ex2", new AvailableFunds { Euro = 20000m, Crypto = 3m },
                 [(3100m, 5m)], null),
-            ("ex3", new AvailableFunds { EurBalance = 22000m, BtcBalance = 4m },
+            ("ex3", new AvailableFunds { Euro = 22000m, Crypto = 4m },
                 [(3200m, 5m)], null)
         );
 
         var request = new OrderRequest { Type = OrderType.Buy, Amount = 5m };
         var result = _metaExchange.ProcessOrder(exchanges, request);
 
-        Assert.Equal(3, result.Count);
+        Assert.Equal(2, result.Count);
         Assert.Equal("ex1", result[0].Exchange);
-        Assert.Equal(1, result[0].Amount);
+        Assert.Equal(2, result[0].Amount);
         Assert.Equal("ex2", result[1].Exchange);
         Assert.Equal(3, result[1].Amount);
-        Assert.Equal("ex3", result[2].Exchange);
-        Assert.Equal(1, result[2].Amount);
     }
 
     [Fact]
     public void BuyOrder_InsufficientLiquidity_ThrowsException()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 5000m, BtcBalance = 0m },
+            ("ex1", new AvailableFunds { Euro = 0m, Crypto = 500m },
                 [(3000m, 1m)], null),
-            ("ex2", new AvailableFunds { EurBalance = 2000m, BtcBalance = 0m },
+            ("ex2", new AvailableFunds { Euro = 0m, Crypto = 500m },
                 [(3100m, 1m)], null)
         );
 
@@ -69,8 +67,8 @@ public class MetaExchangeTests
     public void BuyOrder_NoBids_ThrowsException()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m }, null, []),
-            ("ex2", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m }, null, [])
+            ("ex1", new AvailableFunds { Euro = 50000m, Crypto = 5m }, null, []),
+            ("ex2", new AvailableFunds { Euro = 50000m, Crypto = 5m }, null, [])
         );
 
         var request = new OrderRequest { Type = OrderType.Buy, Amount = 3m };
@@ -82,9 +80,9 @@ public class MetaExchangeTests
     public void SellOrder_SimpleCase_ReturnsHighestPrice()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m },
+            ("ex1", new AvailableFunds { Euro = 50000m, Crypto = 5m },
                 null, [(3000m, 5m)]),
-            ("ex2", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m },
+            ("ex2", new AvailableFunds { Euro = 50000m, Crypto = 5m },
                 null, [(2900m, 5m)])
         );
 
@@ -101,11 +99,11 @@ public class MetaExchangeTests
     public void SellOrder_MultipleExchanges_ReturnsHighestCombination()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 50000m, BtcBalance = 2m },
+            ("ex1", new AvailableFunds { Euro = 50000m, Crypto = 2m },
                 null, [(3100m, 2m)]),
-            ("ex2", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m },
+            ("ex2", new AvailableFunds { Euro = 50000m, Crypto = 5m },
                 null, [(3000m, 5m)]),
-            ("ex3", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m },
+            ("ex3", new AvailableFunds { Euro = 50000m, Crypto = 5m },
                 null, [(2900m, 5m)])
         );
 
@@ -125,9 +123,9 @@ public class MetaExchangeTests
     public void SellOrder_InsufficientBtcBalance_ThrowsException()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 50000m, BtcBalance = 1m },
+            ("ex1", new AvailableFunds { Euro = 50000m, Crypto = 1m },
                 null, [(3100m, 2m)]),
-            ("ex2", new AvailableFunds { EurBalance = 50000m, BtcBalance = 1m },
+            ("ex2", new AvailableFunds { Euro = 50000m, Crypto = 1m },
                 null, [(3000m, 5m)])
         );
 
@@ -140,8 +138,8 @@ public class MetaExchangeTests
     public void SellOrder_NoBids_ThrowsException()
     {
         var exchanges = CreateExchanges(
-            ("ex1", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m }, null, []),
-            ("ex2", new AvailableFunds { EurBalance = 50000m, BtcBalance = 5m }, null, [])
+            ("ex1", new AvailableFunds { Euro = 50000m, Crypto = 5m }, null, []),
+            ("ex2", new AvailableFunds { Euro = 50000m, Crypto = 5m }, null, [])
         );
 
         var request = new OrderRequest { Type = OrderType.Sell, Amount = 3m };

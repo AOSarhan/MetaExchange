@@ -6,6 +6,7 @@ public class MetaExchange : IMetaExchange
 {
     public List<ExecutionOrder> ProcessOrder(List<(string Name, ExchangeData Data)> exchanges, OrderRequest request)
     {
+        if (request.Amount <= 0) throw new ArgumentException("Amount must be positive.");
         return request.Type switch
         {
             OrderType.Sell => ProcessSellOrder(exchanges, request.Amount),
@@ -14,18 +15,18 @@ public class MetaExchange : IMetaExchange
         };
     }
 
-    private List<ExecutionOrder> ProcessSellOrder(List<(string Name, ExchangeData Data)> exchanges, decimal amount)
+    private static List<ExecutionOrder> ProcessSellOrder(List<(string Name, ExchangeData Data)> exchanges, decimal amount)
     {
         var result = new List<ExecutionOrder>();
         var remainingAmount = amount;
+        var btcSoldByExchange = new Dictionary<string, decimal>();
 
-        // Get all bids across exchanges (sorted by highest price first)
         var allBids = exchanges
             .SelectMany(e => e.Data.OrderBook.Bids.Select(b => new
             {
                 Exchange = e.Name,
                 Bid = b.Order,
-                MaxEurAvailable = e.Data.AvailableFunds.EurBalance
+                MaxBtcAvailable = e.Data.AvailableFunds.Crypto
             }))
             .Where(x => x.Bid.Type == OrderType.Buy)
             .OrderByDescending(x => x.Bid.Price)
@@ -35,11 +36,15 @@ public class MetaExchange : IMetaExchange
         {
             if (remainingAmount <= 0) break;
 
-            var btcToSell = Math.Min(remainingAmount, bid.Bid.Amount);
-            var maxEurCanPay = bid.MaxEurAvailable;
-            var maxBtcCanBuy = maxEurCanPay / bid.Bid.Price;
+            btcSoldByExchange.TryAdd(bid.Exchange, 0);
 
-            btcToSell = Math.Min(btcToSell, maxBtcCanBuy); // Ensure the buyer has enough EUR
+            // check remaining BTC available to sell for this exchange
+            var btcAvailable = bid.MaxBtcAvailable - btcSoldByExchange[bid.Exchange];
+            if (btcAvailable <= 0) continue; // Skip if no BTC left to sell
+
+            // check if the amount we want to sell is less than the remaining and the available amount
+            var btcToSell = Math.Min(remainingAmount, bid.Bid.Amount);
+            btcToSell = Math.Min(btcToSell, btcAvailable);
 
             if (btcToSell > 0)
             {
@@ -51,6 +56,7 @@ public class MetaExchange : IMetaExchange
                 });
 
                 remainingAmount -= btcToSell;
+                btcSoldByExchange[bid.Exchange] += btcToSell;
             }
         }
 
@@ -60,19 +66,18 @@ public class MetaExchange : IMetaExchange
         return result;
     }
 
-    private List<ExecutionOrder> ProcessBuyOrder(List<(string Name, ExchangeData Data)> exchanges, decimal amount)
+    private static List<ExecutionOrder> ProcessBuyOrder(List<(string Name, ExchangeData Data)> exchanges, decimal amount)
     {
         var result = new List<ExecutionOrder>();
         var remainingAmount = amount;
+        var eurSpentByExchange = new Dictionary<string, decimal>();
 
-        // Get all asks across exchanges (sorted by lowest price first)
         var allAsks = exchanges
             .SelectMany(e => e.Data.OrderBook.Asks.Select(a => new
             {
                 Exchange = e.Name,
                 Ask = a.Order,
-                MaxBtcAvailable = e.Data.AvailableFunds.BtcBalance,
-                MaxEurAvailable = e.Data.AvailableFunds.EurBalance
+                MaxEurAvailable = e.Data.AvailableFunds.Euro
             }))
             .Where(x => x.Ask.Type == OrderType.Sell)
             .OrderBy(x => x.Ask.Price)
@@ -82,15 +87,18 @@ public class MetaExchange : IMetaExchange
         {
             if (remainingAmount <= 0) break;
 
+            eurSpentByExchange.TryAdd(ask.Exchange, 0);
+
+            // calculate remaining EUR available to spend for this exchange
+            var eurAvailable = ask.MaxEurAvailable - eurSpentByExchange[ask.Exchange];
+            if (eurAvailable <= 0) continue;
+
             var btcToBuy = Math.Min(remainingAmount, ask.Ask.Amount);
+
+            // check if we have enough EUR to buy the amount of BTC we want
             var eurNeeded = btcToBuy * ask.Ask.Price;
-
-            // Ensure enough BTC is available on the exchange
-            btcToBuy = Math.Min(btcToBuy, ask.MaxBtcAvailable);
-
-            // Ensure we have enough EUR to buy
-            if (eurNeeded > ask.MaxEurAvailable)
-                btcToBuy = ask.MaxEurAvailable / ask.Ask.Price;
+            if (eurNeeded > eurAvailable)
+                btcToBuy = eurAvailable / ask.Ask.Price;
 
             if (btcToBuy > 0)
             {
@@ -102,6 +110,7 @@ public class MetaExchange : IMetaExchange
                 });
 
                 remainingAmount -= btcToBuy;
+                eurSpentByExchange[ask.Exchange] += btcToBuy * ask.Ask.Price;
             }
         }
 
@@ -124,7 +133,10 @@ public class MetaExchange : IMetaExchange
         var remainingAmount = request.Amount;
         var result = new List<ExecutionOrder>();
 
-        // Use PriorityQueue to efficiently manage orders by price
+        // Track funds per exchange: EUR spent for buy, BTC sold for sell
+        var fundsUsedByExchange = new Dictionary<string, decimal>();
+
+        // Use PriorityQueue to manage orders by price: min-heap for buy (lowest first), max-heap for sell (highest first)
         var queue = new PriorityQueue<(string Exchange, Order Order, decimal MaxBtc, decimal MaxEur), decimal>(
             isBuy ? Comparer<decimal>.Create((a, b) => a.CompareTo(b)) : Comparer<decimal>.Create((a, b) => b.CompareTo(a)));
 
@@ -132,13 +144,14 @@ public class MetaExchange : IMetaExchange
         foreach (var (name, data) in exchanges)
         {
             var orders = isBuy ? data.OrderBook.Asks : data.OrderBook.Bids;
+            fundsUsedByExchange.TryAdd(name, 0); // Initialize funds used for this exchange
             foreach (var wrapper in orders)
             {
                 var order = wrapper.Order;
                 if ((isBuy && order.Type == OrderType.Sell) || (!isBuy && order.Type == OrderType.Buy))
                 {
                     queue.Enqueue(
-                        (name, order, data.AvailableFunds.BtcBalance, data.AvailableFunds.EurBalance),
+                        (name, order, data.AvailableFunds.Crypto, data.AvailableFunds.Euro),
                         order.Price
                     );
                 }
@@ -150,23 +163,28 @@ public class MetaExchange : IMetaExchange
         {
             var (exchange, order, maxBtcAvailable, maxEurAvailable) = queue.Dequeue();
 
+            // Calculate available funds for this exchange
+            var fundsAvailable = isBuy
+                ? maxEurAvailable - fundsUsedByExchange[exchange] // Remaining EUR for buy
+                : maxBtcAvailable - fundsUsedByExchange[exchange]; // Remaining BTC for sell
+
+            if (fundsAvailable <= 0) continue; // Skip if no funds left for this exchange
+
+            // Determine amount to trade
             var amountToTrade = Math.Min(remainingAmount, order.Amount);
-            var eurNeeded = amountToTrade * order.Price;
 
             if (isBuy)
             {
-                amountToTrade = Math.Min(amountToTrade, maxBtcAvailable); // Seller's BTC limit
-                if (eurNeeded > maxEurAvailable && amountToTrade > 0)
-                    amountToTrade = decimal.Round(maxEurAvailable / order.Price, 8, MidpointRounding.ToZero); // Buyer's EUR limit
+                // Limit by buyer's EUR availability
+                var eurNeeded = amountToTrade * order.Price;
+                if (eurNeeded > fundsAvailable)
+                    amountToTrade = fundsAvailable / order.Price;
             }
             else
             {
-                var maxBtcCanBuy = maxEurAvailable / order.Price;
-                amountToTrade = Math.Min(amountToTrade, maxBtcCanBuy); // Buyer's EUR limit
-                amountToTrade = Math.Min(amountToTrade, maxBtcAvailable); // Seller's BTC limit
+                // Limit by seller's BTC availability
+                amountToTrade = Math.Min(amountToTrade, fundsAvailable);
             }
-
-            amountToTrade = decimal.Round(amountToTrade, 8, MidpointRounding.ToZero);
 
             if (amountToTrade > 0)
             {
@@ -177,6 +195,8 @@ public class MetaExchange : IMetaExchange
                     Price = order.Price
                 });
                 remainingAmount -= amountToTrade;
+                fundsUsedByExchange[exchange] += isBuy ? amountToTrade * order.Price : amountToTrade;
+                if (remainingAmount <= 0) break;
             }
         }
 
